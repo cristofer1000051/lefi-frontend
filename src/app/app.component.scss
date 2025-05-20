@@ -1,0 +1,71 @@
+// src/styles.scss
+
+// 1. Import Roboto da Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+// 2. Variabili globali
+$font-family-base: 'Roboto', sans-serif;
+$font-size-base: 16px;
+$line-height-base: 1.5;
+
+$color-primary: #3f51b5;
+$color-secondary: #ff4081;
+$color-bg: #fafafa;
+$color-text: #212121;
+
+// 3. Reset e box-sizing
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+// 4. Body e tipografia base
+html {
+  font-size: $font-size-base;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: 1rem;
+  line-height: $line-height-base;
+  background-color: $color-bg;
+  color: $color-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 5. Headings
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-base;
+  margin-bottom: 0.5em;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+// 6. Links e pulsanti
+a {
+  color: $color-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button {
+  font-family: $font-family-base;
+  font-size: 1rem;
+  cursor: pointer;
+}
