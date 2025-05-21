@@ -1,4 +1,54 @@
-.sidenav{
-    display: flex;
-    background: red;
+$color-blue: #3b3c5a;
+$color-dark-blue: #2c2e48;
+$color-hover-blue: rgb(84, 87, 119);
+$color-font-menu: #e9e5dc;
+
+.sidenav {
+    position: absolute;
+    display: block;
+    background: $color-blue;
+    color: $color-font-menu;
+    height: 100%;
+    width: auto;
+    transition: width 0.5s ease, height 0.5s ease;
+    .logo-container {
+        background-color: $color-dark-blue;
+        display: flex;
+        justify-content: space-between;
+
+        .logo-text {
+            align-content: center;
+            margin-left: 4rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    }
+
+    .sidenav-nav {
+        .sidenav-nav-item {
+            .sidenav-nav-link {
+                display: flex;
+                width: 100%;
+                color: $color-font-menu;
+                padding: 1rem 5rem;
+                .sidenav-link-text {
+                    margin: 0 1rem;
+                }
+            }
+            .sidenav-nav-collapsed {
+                display: flex;
+                width:auto;
+                color: $color-font-menu;
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            :hover {
+                background: $color-hover-blue;
+                text-decoration: none;
+            }
+        }
+    }
 }
+
+

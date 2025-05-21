@@ -18,10 +18,8 @@ console.log(iconNames);
 export class MenuComponent {
   collapsed: boolean=false;
   navData=navbarData;
-  
 
   isCollapsed():void{
     this.collapsed = this.collapsed ? false:true;
   }
-  
 }

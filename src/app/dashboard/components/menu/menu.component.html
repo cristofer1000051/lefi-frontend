@@ -1,21 +1,35 @@
-<nav class="sidenav" [class.sidenav-collapsed]="collapsed">
-    <div class="sidenav-button-container">
-        <fa-icon [icon]="['fas', 'home']" class="sidenav-link-icon"></fa-icon>
-        <fa-icon [icon]="['fas', 'apple-whole']" class="sidenav-link-icon"></fa-icon>
-        <button class="btn-open"></button>
-        @if (collapsed) {
-            <button class="btn-close"></button>
+<nav class="sidenav">
+    <div class="logo-container">
+        @if(collapsed){
+        <button class="btn-logo" (click)="isCollapsed()">
+            <fa-icon class="icon-2" [icon]="['fas','bars']"></fa-icon>
+        </button>
+        }@else{
+        <div class="logo-text">Lefi</div>
+        <button class="btn-close" (click)="isCollapsed()">
+            <fa-icon class="icon-2" [icon]="['fas','times']"></fa-icon>
+        </button>
         }
+
     </div>
+
     <ul class="sidenav-nav">
+        @for(data of navData; track $index){
         <li class="sidenav-nav-item">
-            
-            @for (data of navData; track $index) {
-                <a class="sidenav-nav-link" [routerLink]="[data.routeLink]">
-                    <i class="sidenav-link-icon" [class]="data.icon"></i>
-                    <span class="sidenav-link-text">{{data.label}}</span>
-                </a>
-            }
+            <a class="sidenav-nav-link" 
+                [class.sidenav-nav-collapsed]="collapsed"
+                [routerLink]="data.routeLink" 
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">
+
+                <fa-icon [icon]="['fas',data.icon]"></fa-icon>
+                @if(!collapsed){
+                <span class="sidenav-link-text">{{data.label}}</span>
+                }
+
+            </a>
         </li>
+        }
     </ul>
+
 </nav>
