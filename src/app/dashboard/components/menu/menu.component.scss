@@ -51,4 +51,12 @@ $color-font-menu: #e9e5dc;
     }
 }
 
-
+.sidenav-collapsed{
+    position: static;
+    display: block;
+    background: $color-blue;
+    color: $color-font-menu;
+    height: 100%;
+    width: auto;
+    transition: width 0.5s ease, height 0.5s ease;
+}
