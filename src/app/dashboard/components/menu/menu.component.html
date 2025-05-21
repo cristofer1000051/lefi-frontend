@@ -5,6 +5,9 @@
             <fa-icon class="icon-2" [icon]="['fas','bars']"></fa-icon>
         </button>
         }@else{
+        <div class="logo-img">
+            <img src="img/leffi.png" alt="Logo">
+        </div>
         <div class="logo-text">Lefi</div>
         <button class="btn-close" (click)="isCollapsed()">
             <fa-icon class="icon-2" [icon]="['fas','times']"></fa-icon>
@@ -16,11 +19,8 @@
     <ul class="sidenav-nav">
         @for(data of navData; track $index){
         <li class="sidenav-nav-item">
-            <a class="sidenav-nav-link" 
-                [class.sidenav-nav-collapsed]="collapsed"
-                [routerLink]="data.routeLink" 
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{exact: true}">
+            <a class="sidenav-nav-link" [class.sidenav-nav-collapsed]="collapsed" [routerLink]="data.routeLink"
+                routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 
                 <fa-icon [icon]="['fas',data.icon]"></fa-icon>
                 @if(!collapsed){
