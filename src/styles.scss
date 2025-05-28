@@ -11,8 +11,9 @@ $line-height-base: 1.5;
 
 $color-primary: #3f51b5;
 $color-secondary: #ff4081;
-$color-bg: #fafafa;
+$color-bg: #979797;
 $color-text: #212121;
+
 
 // 3. Reset e box-sizing
 *,
@@ -98,15 +99,26 @@ p{
     margin: 0;
 }
 
-@mixin icon-size($size,$padding-x:1.5rem,$padding-y:1rem)
+@mixin icon-size($size,$padding-x:1.2rem,$padding-y:0.8rem)
 {
     display: flex;
     font-size: $size;
     padding: $padding-y $padding-x;
 }
-.icon-1{
+.icon-1
+{
     @include icon-size(1rem);
 }
 .icon-2{
     @include icon-size(2rem);
+}
+.container{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    .sub-container{
+        display: flex;
+        width: 100%;
+        padding: 1rem;
+    }
 }

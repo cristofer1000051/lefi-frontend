@@ -1,21 +1,21 @@
 export const navbarData = [
     {
-        routeLink: 'dashboard',
+        routeLink: '/home',
         icon: 'home',
-        label: 'Dashboard'
+        label: 'Home'
     },
     {
-        routeLink: 'products',
-        icon: 'box-open',
-        label: 'Products'
+        routeLink: '/board',
+        icon: 'clipboard-check',
+        label: 'Board'
     },
     {
-        routeLink: 'pages',
+        routeLink: '/pages',
         icon: 'file',
         label: 'Pages'
     },
     {
-        routeLink: 'settings',
+        routeLink: '/settings',
         icon: 'cog',
         label: 'Settings'
     }
