@@ -1,33 +1,34 @@
 $color-blue: #333c57;
-$color-dark-blue: #292f42;
+$color-dark-blue: #252b3d;
 $color-hover-blue: rgb(92, 99, 129);
 $color-font-menu: #e9e5dc;
 
 .sidenav {
     position: absolute;
     display: block;
-    background: $color-blue;
+    background: linear-gradient($color-blue, $color-dark-blue);
     color: $color-font-menu;
     height: 100%;
-    width:35rem;
+    width:25rem;
+    font-size: 1.5rem;
     transition: width 0.5s ease, height 0.5s ease;
+    
     .logo-container {
         display: flex;
         align-items: center;
         background-color: $color-dark-blue;
         display: flex;
         justify-content: space-between;
+        padding: 0.25rem;
         .logo-img{
             display: flex;
-            padding: 1rem;
-            width: 7rem;
-            height: 7rem;
+            width: 4rem;
+            height: 4rem;
         }
-        
 
         .logo-text {
             align-content: center;
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
         }
     }
@@ -65,7 +66,7 @@ $color-font-menu: #e9e5dc;
     background: $color-blue;
     color: $color-font-menu;
     height: 100%;
-    width: 8rem;
+    width: 5rem;
     transition: width 0.1s ease, height 0.1s ease;
     .logo-container{
         display: flex;
@@ -75,5 +76,4 @@ $color-font-menu: #e9e5dc;
 .btn-close,.btn-logo {
     font-size: 1rem;
     cursor: pointer;
-    margin: 1rem;
 }

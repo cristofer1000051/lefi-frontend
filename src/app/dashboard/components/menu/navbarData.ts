@@ -6,7 +6,11 @@ export const navbarData = [
     },
     {
         routeLink: '/board',
+<<<<<<< HEAD
         icon: 'box-open',
+=======
+        icon: 'clipboard-check',
+>>>>>>> 43ed58537363a287e864c777b61af733caad2471
         label: 'Board'
     },
     {
