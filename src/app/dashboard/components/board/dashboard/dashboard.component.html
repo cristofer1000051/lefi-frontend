@@ -1,1 +1,35 @@
-<p>dashboard works!</p>
+<div class="container">
+  <app-menu></app-menu>
+  <div class="board-container">
+    <div class="tool-container">
+      <div class="tool">
+        <label for="lineWidth" class="font-bold text-gray-700">Spessore:</label>
+        <input
+          type="range"
+          id="lineWidth"
+          min="1"
+          max="10"
+          class="w-24"
+          [(ngModel)]="currentLineWidth"
+          (input)="updateStrokeStyle()"
+        />
+      </div>
+      <button
+        id="clearButton"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition-colors duration-200"
+        (click)="clearCanvas()"
+      >
+        Cancella
+      </button>
+    </div>
+    <canvas
+      #whiteboardCanvas
+      class="board"
+      (mousedown)="startDrawing($event)"
+      (mousemove)="draw($event)"
+      (mouseup)="stopDrawing()"
+      (mouseout)="stopDrawing()"
+    ></canvas>
+   
+  </div>
+</div>
