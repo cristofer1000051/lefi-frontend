@@ -9,4 +9,8 @@ export interface Point {
   x: number;
   y: number;
 }
-
+export interface DrawingPath {
+  color: string;
+  width: number;
+  points: Point[];
+}
