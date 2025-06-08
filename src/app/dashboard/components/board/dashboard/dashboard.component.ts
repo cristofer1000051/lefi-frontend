@@ -1,137 +1,157 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Point } from './board.utils';
+import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuComponent } from "../../menu/menu.component";
-
+import { Point, CanvasTransform } from './board.utils';
+import { MatSliderModule } from '@angular/material/slider';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule, MenuComponent],
+  imports: [FormsModule, MenuComponent, MatSliderModule, FontAwesomeModule,
+    ColorPickerDirective],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-  @ViewChild('whiteboardCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvasRef') canvasRef!: ElementRef<HTMLCanvasElement>;
+
   private ctx!: CanvasRenderingContext2D;
+  sliderValue: number;
+  currentColor: any;
+  private isDrawing = false;
+  private isPanning = false;
+  private lastX = 0;
+  private lastY = 0;
+  private offsetX = 0;
+  private offsetY = 0;
+  private scale = 1;
+  private resizeObserver!: ResizeObserver;
+  boundingRect!: DOMRect;
+  
+  constructor() {
+    this.sliderValue = 1;
+  }
+  ngAfterViewInit() {
+    this.observeCanvasResize();
+    
+  }
 
-  isDrawing: boolean = false;
-  lastPoint: Point | null = null;
-
-  currentColor: string = '#000000';
-  currentLineWidth: number = 2;
-
-  private paddingLeft: number = 0;
-  private paddingTop: number = 0;
-  ngAfterViewInit(): void {
-    if (this.canvasRef) {
-      const canvas = this.canvasRef.nativeElement;
-      const context = canvas.getContext('2d');
-
-      if (context) {
-        this.ctx = context;
-        this.setupCanvas();
-      } else {
-        console.error("Impossibile ottenere il contesto 2D del canvas");
-      }
-    }
-  }
-  // Metodo per gestire il ridimensionamento della finestra
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event): void {
-    if (this.canvasRef && this.ctx) {
-      this.setCanvasDimensions();
-      this.setupCanvas();
-      this.clearCanvas(); // Pulisci il canvas al ridimensionamento per evitare distorsioni
-    }
-  }
-  private setCanvasDimensions(): void {
-    const canvas = this.canvasRef.nativeElement;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    const computedStyle = getComputedStyle(canvas);
-    this.paddingLeft = parseFloat(computedStyle.paddingLeft);
-    this.paddingTop = parseFloat(computedStyle.paddingTop);
-    console.log(`Canvas dimensions updated: ${canvas.width}x${canvas.height}, Padding: ${this.paddingLeft},${this.paddingTop}`); // Debugging
-  }
-  private setupCanvas(): void {
-    // Imposta le dimensioni del canvas.
-    // È importante impostare width e height direttamente sull'elemento canvas
-    // per evitare distorsioni del disegno.
-    const canvas = this.canvasRef.nativeElement;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    const computedStyle = getComputedStyle(canvas);
-    this.paddingLeft = parseFloat(computedStyle.paddingLeft);
-    this.paddingTop = parseFloat(computedStyle.paddingTop);
-    // Impostazioni iniziali del contesto di disegno
-    this.ctx.lineWidth = this.currentLineWidth;
-    this.ctx.lineCap = 'round'; // Rende le estremità delle linee arrotondate
-    this.ctx.lineJoin = 'round'; // Rende gli angoli delle linee arrotondati
-    this.updateStrokeStyle(); // Applica il colore e lo spessore iniziali
-  }
-  /**
-     * Aggiorna lo stile del tratto (colore e spessore) del contesto di disegno.
-     * Chiamato quando cambiano i valori degli input.
-     */
-  updateStrokeStyle(): void {
-    this.ctx.strokeStyle = this.currentColor;
-    this.ctx.lineWidth = this.currentLineWidth;
-  }
-  /**
-     * Calcola le coordinate del mouse relative all'elemento canvas.
-     * @param event L'evento del mouse.
-     * @returns Un oggetto Point con le coordinate x e y.
-     */
-  private getMousePos(event: MouseEvent): Point {
-    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
-  }
-  /**
- * Inizia il processo di disegno quando il mouse viene premuto.
- * @param event L'evento mousedown.
- */
-  startDrawing(event: MouseEvent): void {
+  startDraw(event: MouseEvent) {
     this.isDrawing = true;
-    this.lastPoint = this.getMousePos(event);
-    this.ctx.beginPath(); // Inizia un nuovo percorso di disegno
-    this.ctx.moveTo(this.lastPoint.x, this.lastPoint.y); // Sposta il "pennello" al punto iniziale
+    this.lastX = (event.offsetX - this.offsetX) / this.scale;
+    this.lastY = (event.offsetY - this.offsetY) / this.scale;
 
   }
+  observeCanvasResize() {
+    const canvas = this.canvasRef.nativeElement;
+    this.resizeObserver = new ResizeObserver(() => {
+      this.resizeCanvas(); // chiamata ogni volta che cambia la dimensione del canvas
+    });
+  
+    this.resizeObserver.observe(canvas);
+  }
+  resizeCanvas() {
+    const canvas = this.canvasRef.nativeElement;
+  
+    const cssWidth = canvas.clientWidth;
+    const cssHeight = canvas.clientHeight;
+  
+    canvas.width = cssWidth;
+    canvas.height = cssHeight;
+  
+    this.boundingRect = canvas.getBoundingClientRect();
+  
+    this.ctx = canvas.getContext('2d')!;
+    this.ctx.lineWidth = this.sliderValue;
+    this.ctx.lineCap = 'round';
+  
+    // eventualmente chiami un redraw o reinit
+    this.redraw();
+  }
+  draw(event: MouseEvent) {
+    const x = (event.offsetX - this.offsetX) / this.scale;
+    const y = (event.offsetY - this.offsetY) / this.scale;
 
-  /**
-    * Disegna una linea mentre il mouse viene trascinato, se isDrawing è true.
-    * @param event L'evento mousemove.
-    */
-  draw(event: MouseEvent): void {
-    if (!this.isDrawing) return;
-    console.log('Disegnando:', event.offsetX, event.offsetY);
-    const currentPoint = this.getMousePos(event);
-    if (this.lastPoint) {
-      this.ctx.lineTo(currentPoint.x, currentPoint.y); // Disegna una linea dal punto precedente al corrente
-      this.ctx.stroke(); // Applica la linea al canvas
+    this.ctx.save();
+    this.ctx.resetTransform();
+    this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.lastX, this.lastY);
+    this.ctx.lineTo(x, y);
+    this.ctx.stroke();
+    this.ctx.restore();
 
-      // Aggiorna il punto precedente per il prossimo segmento
-      this.lastPoint = currentPoint;
+    this.lastX = x;
+    this.lastY = y;
+  }
+
+  endDraw() {
+    this.isDrawing = false;
+  }
+
+  startPan(event: MouseEvent) {
+    if (event.button !== 1) return; // middle mouse
+    this.isPanning = true;
+    this.lastX = event.clientX;
+    this.lastY = event.clientY;
+  }
+  pan(event: MouseEvent) {
+    const dx = event.clientX - this.lastX;
+    const dy = event.clientY - this.lastY;
+    this.offsetX += dx;
+    this.offsetY += dy;
+    this.lastX = event.clientX;
+    this.lastY = event.clientY;
+    this.redraw();
+  }
+
+  endPan() {
+    this.isPanning = false;
+  }
+
+  zoom(event: WheelEvent) {
+    console.log("zoom");
+    event.preventDefault();
+    const zoom = event.deltaY > 0 ? 0.9 : 1.1;
+    this.scale *= zoom;
+    this.redraw();
+  }
+
+  redraw() {
+    console.log("REDRAW");
+    const canvas = this.canvasRef.nativeElement;
+    const imgData = this.ctx.getImageData(0, 0, canvas.width, canvas.height);
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+    this.ctx.putImageData(imgData, 0, 0);
+  }
+
+  onMouseDown(event: MouseEvent) {
+    console.log("click down");
+    if (event.button === 0) {
+      this.startDraw(event);
+    } else if (event.button === 1) {
+      this.startPan(event);
     }
   }
+  onMouseMove(event: MouseEvent) {
 
-  /**
-   * Ferma il processo di disegno quando il mouse viene rilasciato o esce dal canvas.
-   */
-  stopDrawing(): void {
-    this.isDrawing = false;
-    this.lastPoint = null;
-    this.ctx.closePath(); // Chiude il percorso corrente
+    if (this.isDrawing) {
+      this.draw(event);
+      console.log("drawing");
+    } else if (this.isPanning) {
+      console.log("rotellina");
+      this.startPan(event);
+    }
   }
-
-  /**
-   * Cancella l'intero contenuto del canvas.
-   */
-  clearCanvas(): void {
-    this.ctx.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+  onMouseUp(event: MouseEvent) {
+    console.log("click up");
+    if (event.button == 0) {
+      this.endDraw();
+    } else if (event.button === 1) {
+      this.endPan();
+    }
   }
 }

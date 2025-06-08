@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { navbarData } from './navbarData';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -17,10 +17,12 @@ console.log(iconNames);
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent {
-  collapsed: boolean=false;
+  public collapsed: boolean
   navData=navbarData;
-
+  constructor(){
+    this.collapsed=false;
+  }
   isCollapsed():void{
-    this.collapsed = this.collapsed ? false:true;
+    this.collapsed = !this.collapsed;
   }
 }
