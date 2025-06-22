@@ -30,12 +30,15 @@
       </div>
     </div>
     <div class="canvas-container">
-      <canvas 
-      (mousedown)="onMouseDown($event)"
-      (mouseup)="onMouseUp($event)"
-      (mousemove)="onMouseMove($event)"
-      (wheel)="zoom($event)"
-      #canvasRef class="board"></canvas>
+      <svg
+        #svgRef
+        class="board"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid meet"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (wheel)="zoom($event)"
+      ></svg>
     </div>
   </div>
 </div>
