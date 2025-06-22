@@ -4,9 +4,9 @@ import { PolyLine } from "../utils/PolyLine";
 import { FormattedDate } from "../utils/FormattedDate";
 
 export class PolyLinesService {
-  private formattedDate: FormattedDate;
+  private formattedDate!: FormattedDate;
   constructor() {
-    this.formattedDate = new FormattedDate();
+    
   }
 
   public getMouseCoord(coord: Coord, svgRef: ElementRef<SVGElement>): { x: number, y: number } {
@@ -30,6 +30,7 @@ export class PolyLinesService {
       svgRef: ElementRef<SVGElement>,
       sliderValue: Number
     ) {
+    this.formattedDate = new FormattedDate();
     let currentPolyline = document.createElementNS('http://www.w3.org/2000/svg', `polyline`);
     currentPolyline.setAttribute('stroke', currentColor.toString());
     currentPolyline.setAttribute('stroke-width', sliderValue.toString());
